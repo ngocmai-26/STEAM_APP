@@ -1,6 +1,6 @@
 import { getToken } from './tokenService';
 
-export const API_BASE_URL = 'https://bdu-steam.onrender.com/steam/apis';
+export const API_BASE_URL = 'https://stem.bdu.edu.vn/steam/apis';
 
 export const ApiServices = {
   async getCourses() {

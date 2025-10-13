@@ -1,5 +1,5 @@
 // API Constants
-export const API_BASE_URL = 'https://bdu-steam.onrender.com/steam/apis/app';
+export const API_BASE_URL = 'https://stem.bdu.edu.vn/steam/apis/app';
 
 export const API_ENDPOINTS = {
   SESSION: '/auth/session',
