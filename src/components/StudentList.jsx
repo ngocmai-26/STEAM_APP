@@ -54,15 +54,18 @@ export default function StudentList() {
     };
 
     return (
-        <div className="w-full max-w-4xl mx-auto mt-4 px-4 pb-20">
+        <div className="w-full max-w-4xl mx-auto pt-8 px-4 pb-20">
             <div className="text-center mb-6">
-                <h1 className="text-4xl font-extrabold text-blue-600 mb-4">Thông tin học viên</h1>
+                <h1 className="text-3xl font-bold text-gray-800 mb-4 font-sans">Thông tin học viên</h1>
                 <div className="flex justify-end">
                     <button
-                        className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-200 font-semibold shadow-md"
+                        className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-2 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 hover:shadow-lg shadow-blue-500/25 font-medium text-base focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50"
                         onClick={() => setShowForm(!showForm)}
                     >
-                        Đăng ký
+                        <span className="flex items-center gap-2">
+                            <span>➕</span>
+                            Đăng ký học viên
+                        </span>
                     </button>
                 </div>
             </div>
@@ -92,10 +95,13 @@ export default function StudentList() {
                                 </div>
                                 <div className="flex justify-end mt-2">
                                     <button
-                                        className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+                                        className="px-4 py-2 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-300 transform hover:scale-105 hover:shadow-lg shadow-green-500/25 font-medium focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50"
                                         onClick={() => setSelectedStudent(student)}
                                     >
-                                        Xem chi tiết
+                                        <span className="flex items-center gap-1">
+                                            <span>👁️</span>
+                                            Xem chi tiết
+                                        </span>
                                     </button>
                                 </div>
                             </div>

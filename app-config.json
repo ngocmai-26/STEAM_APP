@@ -2,7 +2,7 @@
   "app": {
     "title": "steam_ai_app",
     "headerTitle": "steam_ai_app",
-    "headerColor": "#1843EF",
+    "headerColor": "#4285F4",
     "textColor": "white",
     "leftButton": "back",
     "statusBar": "normal",

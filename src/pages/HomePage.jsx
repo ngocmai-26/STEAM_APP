@@ -6,16 +6,16 @@ import StudentClasses from '../components/StudentClasses';
 import { openWebview } from 'zmp-sdk';
 
 const features = [
-  { icon: "📄", label: "Tổng quan khóa học", path: "/courses" },
-  { icon: "👨‍🎓", label: "Thông tin học viên", path: "/student-info" },
-  { icon: "📅", label: "Thời khóa biểu học viên", path: "/schedule" },
-  { icon: "🖼️", label: "Hình ảnh học viên", path: "/student-images" },
-  { icon: "⭐", label: "Đánh giá học viên", path: "/student-evaluation" },
-  { icon: "🏫", label: "Cơ sở vật chất", path: "/facilities" },
-  { icon: "🧸", label: "Khóa học của bé", path: "/kid-courses" },
-  { icon: "📝", label: "Điểm danh", path: "/attendance" },
-  { icon: "🎓", label: "Tổng quan lớp học", path: "/class" },
-  { icon: "📰", label: "Tin tức", path: "/news" },
+  { icon: "📄", label: "Tổng quan khóa học", path: "/courses", gradient: "from-blue-400 to-blue-600", hoverGradient: "from-blue-500 to-blue-700" },
+  { icon: "👨‍🎓", label: "Thông tin học viên", path: "/student-info", gradient: "from-green-400 to-green-600", hoverGradient: "from-green-500 to-green-700" },
+  { icon: "📅", label: "Thời khóa biểu học viên", path: "/schedule", gradient: "from-purple-400 to-purple-600", hoverGradient: "from-purple-500 to-purple-700" },
+  { icon: "🖼️", label: "Hình ảnh học viên", path: "/student-images", gradient: "from-pink-400 to-pink-600", hoverGradient: "from-pink-500 to-pink-700" },
+  { icon: "⭐", label: "Đánh giá học viên", path: "/student-evaluation", gradient: "from-yellow-400 to-orange-500", hoverGradient: "from-yellow-500 to-orange-600" },
+  { icon: "🏫", label: "Cơ sở vật chất", path: "/facilities", gradient: "from-indigo-400 to-indigo-600", hoverGradient: "from-indigo-500 to-indigo-700" },
+  { icon: "🧸", label: "Khóa học của bé", path: "/kid-courses", gradient: "from-teal-400 to-teal-600", hoverGradient: "from-teal-500 to-teal-700" },
+  { icon: "📝", label: "Điểm danh", path: "/attendance", gradient: "from-red-400 to-red-600", hoverGradient: "from-red-500 to-red-700" },
+  { icon: "🎓", label: "Tổng quan lớp học", path: "/class", gradient: "from-cyan-400 to-cyan-600", hoverGradient: "from-cyan-500 to-cyan-700" },
+  { icon: "📰", label: "Tin tức", path: "/news", gradient: "from-emerald-400 to-emerald-600", hoverGradient: "from-emerald-500 to-emerald-700" },
 ];
 
 export default function HomePage() {
@@ -96,11 +96,11 @@ export default function HomePage() {
   return (
     <div className="min-h-screen pb-16 bg-gray-50">
       {/* Header */}
-      <div className="bg-gradient-to-b from-cyan-200 to-white rounded-b-3xl shadow-md p-2">
+      <div className="bg-gradient-to-b from-blue-200 to-white rounded-b-3xl shadow-md p-2">
         <div className="flex flex-col items-center">
           <img src="/logo192.png" alt="logo" className="w-12 h-12 mt-2" />
-          <h1 className="text-3xl font-bold tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-pink-500 to-cyan-500 mt-1">STEAM <span className="text-yellow-400">AI</span></h1>
-          <div className="text-base font-semibold text-cyan-700 mt-1">FUN <span className="text-orange-400">-</span> LEARN <span className="text-orange-400">-</span> CREATE</div>
+          <h1 className="text-3xl font-bold tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-pink-500 to-blue-500 mt-1">STEAM <span className="text-yellow-400">AI</span></h1>
+          <div className="text-base font-semibold text-blue-700 mt-1">FUN <span className="text-orange-400">-</span> LEARN <span className="text-orange-400">-</span> CREATE</div>
         </div>
       </div>
       {/* Features grid */}
@@ -109,27 +109,41 @@ export default function HomePage() {
           <Link
             key={idx}
             to={f.path}
-            className="flex flex-col items-center bg-white rounded-xl shadow p-2 hover:bg-cyan-50 transition-colors duration-200"
+            className={`group flex flex-col items-center bg-gradient-to-br ${f.gradient} rounded-2xl shadow-lg hover:shadow-xl p-3 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 relative overflow-hidden`}
           >
-            <span className="text-3xl mb-1">{f.icon}</span>
-            <span className="text-xs text-center font-medium text-gray-700 leading-tight">{f.label}</span>
+            {/* Shimmer effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+            
+            {/* Icon with bounce effect */}
+            <span className="text-3xl mb-2 group-hover:animate-bounce transition-all duration-300 relative z-10">{f.icon}</span>
+            
+            {/* Text with better styling */}
+            <span className="text-xs text-center font-semibold text-white leading-tight relative z-10 drop-shadow-sm">
+              {f.label}
+            </span>
+            
+            {/* Subtle glow effect */}
+            <div className={`absolute inset-0 bg-gradient-to-br ${f.hoverGradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl`}></div>
           </Link>
         ))}
       </div>
       {/* Activities */}
-      <div className="px-4 mt-2">
-        <h2 className="text-lg font-bold mb-2 text-gray-800">Hoạt động học viên</h2>
+      <div className="px-4 mt-6">
+        <h2 className="text-3xl font-bold mb-6 text-gray-800 font-sans flex items-center gap-3">
+          <span className="text-2xl">📰</span>
+          Hoạt động học viên
+        </h2>
         {loading ? (
-          <div className="flex justify-center py-4">
-            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-cyan-500"></div>
+          <div className="flex justify-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
           </div>
         ) : (
-          <div className="flex gap-3 overflow-x-auto pb-2">
+          <div className="flex gap-4 overflow-x-auto pb-4">
             {activities.map((a, idx) => (
-              <div key={idx} className="min-w-[180px] bg-white rounded-xl shadow-md p-2 flex-shrink-0" onClick={() => {
+              <div key={idx} className="min-w-[180px] h-64 bg-white rounded-xl shadow-md p-2 flex-shrink-0" onClick={() => {
                 openUrlInWebview(a.link);
               }}>
-                <img src={a.img} alt="activity" className="w-full h-24 object-cover rounded-lg mb-2" />
+                <img src={a.img} alt="activity" className="w-full h-48 object-cover rounded-lg mb-2" />
                 <div className="text-xs font-semibold text-gray-700 mb-1">{a.title}</div>
                 <div className="text-[10px] text-gray-400 text-right">{a.date}</div>
               </div>

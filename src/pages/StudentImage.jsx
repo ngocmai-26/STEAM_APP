@@ -109,7 +109,7 @@ export default function StudentImage() {
     return (
         <div className="min-h-screen flex flex-col pt-8">
             <div className="flex-1 flex flex-col items-center">
-                <h1 className="text-4xl font-bold text-center mb-8 text-blue-600">
+                <h1 className="text-3xl font-bold text-center mb-8 text-gray-800 font-sans">
                     Hình ảnh học viên
                 </h1>
 

@@ -81,9 +81,13 @@ const AddStudentForm = ({ onClose, onSubmit }) => {
 
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors duration-200"
+            className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 px-6 rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 hover:shadow-lg shadow-blue-500/25 font-semibold text-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50"
           >
-            Đăng ký
+            <span className="flex items-center justify-center gap-2">
+              <span>✨</span>
+              Đăng ký học viên
+              <span>✨</span>
+            </span>
           </button>
         </form>
       </div>

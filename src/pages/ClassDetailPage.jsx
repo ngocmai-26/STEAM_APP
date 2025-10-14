@@ -44,7 +44,7 @@ export default function ClassDetailPage() {
     }, [id]);
 
     return (
-        <div className="min-h-screen flex flex-col pt-6">
+        <div className="min-h-screen flex flex-col pt-8">
             <div className="flex-1 flex flex-col items-center">
                 <div className="w-full max-w-3xl bg-white rounded-2xl shadow-xl p-6 mb-8">
                     <button
@@ -64,7 +64,7 @@ export default function ClassDetailPage() {
                         <div className="text-gray-500 italic text-center py-8">Không tìm thấy lớp học</div>
                     ) : (
                         <>
-                            <h1 className="text-2xl font-extrabold text-blue-700 mb-2">Lớp #{classInfo.id}</h1>
+                            <h1 className="text-3xl font-bold text-gray-800 mb-2 font-sans">Lớp #{classInfo.id}</h1>
                             <div className="mb-2 text-gray-700 font-medium">Giáo viên: {classInfo.teacher?.name}</div>
                             <div className="mb-2 text-gray-700">Email: {classInfo.teacher?.email}</div>
                             <div className="mb-2 text-gray-700">SĐT: {classInfo.teacher?.phone}</div>

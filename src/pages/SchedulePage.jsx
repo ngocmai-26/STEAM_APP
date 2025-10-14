@@ -128,12 +128,27 @@ const SchedulePage = () => {
 
       try {
         setLoading(true);
-        const response = await ApiServices.getTimeTables({
+        const params = {
           student: selectedStudent,
           class_room: selectedClass
-        });
+        };
+        
+        // Thêm filter theo ngày nếu có
+        if (startDate) params.start_date = startDate;
+        if (endDate) params.end_date = endDate;
+        
+        // Debug log để kiểm tra API call
+        console.log('API call params:', params);
+        
+        const response = await ApiServices.getTimeTables(params);
+        
+        // Debug log để kiểm tra response
+        console.log('API response:', response);
+        console.log('Schedule data:', response.data);
+        
         setSchedule(response.data || []);
       } catch (err) {
+        console.error('API error:', err);
         setError('Không thể tải lịch học');
         setSchedule(mockSchedule); // Fallback to mock data
       } finally {
@@ -160,11 +175,79 @@ const SchedulePage = () => {
     updateVisibleDays(weekDays, newOffset);
   };
 
+  // Lấy trạng thái lịch học
+  const getScheduleStatus = (item) => {
+    const now = new Date();
+    const startTime = new Date(item.start_datetime || item.schedule?.start_datetime);
+    const endTime = new Date(item.end_datetime || item.schedule?.end_datetime);
+    
+    if (now < startTime) {
+      return { status: 'upcoming', text: 'Sắp tới', color: 'text-blue-600' };
+    } else if (now >= startTime && now <= endTime) {
+      return { status: 'ongoing', text: 'Đang diễn ra', color: 'text-green-600' };
+    } else {
+      return { status: 'past', text: 'Đã qua', color: 'text-gray-500' };
+    }
+  };
+
+  // Filter schedule theo ngày được chọn và thời gian hiện tại
+  const getFilteredSchedule = () => {
+    if (!selectedDay || !schedule.length) {
+      console.log('No schedule data or no selected day:', { selectedDay, scheduleLength: schedule.length });
+      return schedule;
+    }
+    
+    // Debug log để kiểm tra tất cả dữ liệu schedule
+    console.log('All schedule data:', schedule.map(item => ({
+      name: item.name,
+      date: item.schedule?.start_date || item.date,
+      fullItem: item
+    })));
+    
+    const filtered = schedule.filter(item => {
+      const itemDate = item.schedule?.start_date || item.date;
+      if (!itemDate) return false;
+      
+      // Chuyển đổi ngày để so sánh
+      const selectedDateStr = weekDays.find(day => day.id === selectedDay)?.date;
+      
+      // Chuyển đổi itemDate từ "14/10/2025" thành "14-10" để so sánh
+      let itemDateFormatted = itemDate;
+      if (itemDate.includes('/')) {
+        // Nếu có định dạng dd/mm/yyyy, chuyển thành dd-mm
+        const parts = itemDate.split('/');
+        if (parts.length >= 2) {
+          itemDateFormatted = `${parts[0].padStart(2, '0')}-${parts[1].padStart(2, '0')}`;
+        }
+      }
+      
+      // Debug log để kiểm tra
+      console.log('Debug filter:', {
+        selectedDay,
+        selectedDateStr,
+        itemDate,
+        itemDateFormatted,
+        itemName: item.name,
+        match: itemDateFormatted === selectedDateStr
+      });
+      
+      // Kiểm tra ngày khớp với ngày được chọn
+      if (itemDateFormatted !== selectedDateStr) return false;
+      
+      // Chỉ filter theo ngày được chọn, không filter theo thời gian hiện tại
+      // vì người dùng có thể muốn xem lịch học trong tương lai
+      return true;
+    });
+    
+    console.log('Filtered schedule result:', filtered);
+    return filtered;
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
       {/* Header */}
-      <div className="bg-white p-4 mx-4 rounded-lg mt-4">
-        <h1 className="text-2xl font-bold text-center text-blue-600 mb-4">
+      <div className="bg-white p-4 mx-4 rounded-lg mt-8">
+        <h1 className="text-3xl font-bold text-center text-gray-800 mb-4 font-sans">
           Lịch học
         </h1>
 
@@ -293,29 +376,35 @@ const SchedulePage = () => {
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
             <span className="ml-3 text-gray-600">Đang tải lịch học...</span>
           </div>
-        ) : schedule.length === 0 ? (
+        ) : getFilteredSchedule().length === 0 ? (
           <div className="text-center text-gray-500 py-8">
-            Không có lịch học nào trong khoảng thời gian này
+            <div className="text-4xl mb-2">📅</div>
+            <p>Không có lịch học nào trong ngày này</p>
           </div>
         ) : (
-          schedule.map((item, index) => (
+          getFilteredSchedule().map((item, index) => (
             <div
               key={item.id || index}
               className="bg-white rounded-lg shadow-md p-4 mb-4"
             >
-              <h3 className="text-lg font-semibold text-blue-600 mb-2">
-                {item.subject || item.course_name || 'Khóa học'}
-              </h3>
+              <div className="flex justify-between items-start mb-2">
+                <h3 className="text-lg font-semibold text-blue-600">
+                  {item.subject || item.course_name || item.name || 'Khóa học'}
+                </h3>
+                <span className={`text-xs px-2 py-1 rounded-full ${getScheduleStatus(item).color} bg-gray-100`}>
+                  {getScheduleStatus(item).text}
+                </span>
+              </div>
               <p className="text-sm text-gray-600">
-                {item.description || item.teacher_name || item.instructor}
+                {item.description || item.teacher_name || item.instructor || 'Thông tin giáo viên chưa có'}
               </p>
               <div className="mt-2 flex justify-between text-sm text-gray-500">
-                <span>{item.room || item.location || 'Phòng học'}</span>
-                <span>{item.time || item.start_time + '-' + item.end_time}</span>
+                <span>{item.room || item.location || 'Phòng học chưa xác định'}</span>
+                <span>{item.time || (item.schedule?.start_time && item.schedule?.end_time ? `${item.schedule.start_time}-${item.schedule.end_time}` : 'Thời gian chưa xác định')}</span>
               </div>
-              {item.date && (
+              {(item.date || item.schedule?.start_date) && (
                 <div className="mt-1 text-xs text-gray-400">
-                  Ngày: {new Date(item.date).toLocaleDateString('vi-VN')}
+                  Ngày: {item.schedule?.start_date || new Date(item.date).toLocaleDateString('vi-VN')}
                 </div>
               )}
             </div>

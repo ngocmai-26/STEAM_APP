@@ -64,30 +64,15 @@ export default function NewsPage() {
   return (
     <div className="min-h-screen pb-16 bg-gray-50">
       {/* Header */}
-      <div className="bg-gradient-to-b from-cyan-200 to-white rounded-b-3xl shadow-md p-2">
+      <div className="bg-gradient-to-b from-blue-200 to-white rounded-b-3xl shadow-md p-2">
         <div className="flex flex-col items-center">
           <img src="/logo192.png" alt="logo" className="w-12 h-12 mt-2" />
-          <h1 className="text-3xl font-bold tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-pink-500 to-cyan-500 mt-1">STEAM <span className="text-yellow-400">AI</span></h1>
-          <div className="text-base font-semibold text-cyan-700 mt-1">FUN <span className="text-orange-400">-</span> LEARN <span className="text-orange-400">-</span> CREATE</div>
+          <h1 className="text-3xl font-bold tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-pink-500 to-blue-500 mt-1">STEAM <span className="text-yellow-400">AI</span></h1>
+          <div className="text-base font-semibold text-blue-700 mt-1">FUN <span className="text-orange-400">-</span> LEARN <span className="text-orange-400">-</span> CREATE</div>
         </div>
       </div>
 
-      {/* Navigation */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="flex gap-1 px-2 py-2 overflow-x-auto">
-          <button
-            onClick={() => setSelectedCategory('all')}
-            className={`px-3 py-1 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
-              selectedCategory === 'all'
-                ? 'bg-cyan-500 text-white'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            }`}
-          >
-            Tất cả
-          </button>
-         
-        </div>
-      </div>
+      
 
       {/* News Content */}
       <div className="px-4 mt-4">
@@ -95,7 +80,7 @@ export default function NewsPage() {
 
         {loading ? (
           <div className="flex justify-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-cyan-500"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
           </div>
         ) : (
           <div className="space-y-4">
@@ -119,7 +104,7 @@ export default function NewsPage() {
                   </p>
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-gray-400">{item.date}</span>
-                    <button className="text-xs text-cyan-600 font-medium hover:text-cyan-700" onClick={() => {
+                    <button className="text-xs text-blue-600 font-medium hover:text-blue-700" onClick={() => {
                 openUrlInWebview(item.link);
               }}>
                       Đọc thêm →

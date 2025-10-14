@@ -65,7 +65,7 @@ export default function StudentEvaluate() {
     return (
         <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 to-pink-50 pt-8">
             <div className="flex-1 flex flex-col items-center">
-                <h1 className="text-3xl font-extrabold text-blue-700 mb-8 drop-shadow">Đánh giá học viên</h1>
+                <h1 className="text-3xl font-bold text-gray-800 mb-8 font-sans">Đánh giá học viên</h1>
                 {/* Filter */}
                 <div className="w-full max-w-4xl bg-white rounded-2xl shadow-lg p-6 mb-8">
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

@@ -116,9 +116,9 @@ const FacilityPage = () => {
   }
 
   return (
-    <div className="facility-page">
+    <div className="facility-page pt-8">
      
-     <h3 className="text-2xl font-extrabold text-center text-blue-700 mb-8 drop-shadow">Cơ sở vật chất</h3>
+     <h3 className="text-3xl font-bold text-center text-gray-800 mb-8 font-sans">Cơ sở vật chất</h3>
       <div className="facility-list">
         {facilities.map((facility) => (
           <FacilityCard key={facility.id} facility={facility} />
