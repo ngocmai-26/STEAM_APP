@@ -37,13 +37,15 @@ export default function AttendancePage() {
         setLoading(true);
         setError(null);
         // Gọi API với filter
-        let url = '/app/attendances';
+        let url = '/attendances';
         const params = [];
         if (filter.student) params.push(`student=${filter.student}`);
         if (filter.class_room) params.push(`class_room=${filter.class_room}`);
         if (params.length > 0) url += `?${params.join('&')}`;
         ApiServices.callAPI(url)
             .then(res => {
+                console.log('🔍 [AttendancePage] API Response:', res);
+                console.log('🔍 [AttendancePage] Attendances data:', res.data);
                 setAttendances(res.data || []);
                 setLoading(false);
             })
@@ -54,7 +56,7 @@ export default function AttendancePage() {
     }, [filter]);
 
     return (
-        <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 to-pink-50 pt-8">
+        <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 to-pink-50 pt-8 pb-24">
             <div className="flex-1 flex flex-col items-center">
                 <h1 className="text-3xl font-bold text-gray-800 mb-8 font-sans">Điểm danh</h1>
                 {/* Bộ lọc */}
@@ -104,23 +106,75 @@ export default function AttendancePage() {
                     <div className="text-gray-500 italic text-center py-8">Chưa có dữ liệu điểm danh</div>
                 ) : (
                     <div className="w-full max-w-3xl space-y-6">
-                        {attendances.map((item, idx) => (
+                        {attendances.map((item, idx) => {
+                            console.log('🔍 [AttendancePage] Item:', item);
+                            console.log('🔍 [AttendancePage] Item.class_room:', item.class_room);
+                            console.log('🔍 [AttendancePage] Item.module:', item.module);
+                            console.log('🔍 [AttendancePage] Item.lesson:', item.lesson);
+                            return (
                             <div key={item.id || idx} className="bg-white rounded-2xl shadow p-5">
                                 <div className="font-bold text-lg text-blue-800 mb-2">
-                                    Bài {item.lesson?.sequence_number} - {item.lesson?.name}
+                                    {item.lesson ? `Bài ${item.lesson.sequence_number} - ${item.lesson.name}` : `Bài ${item.sequence_number || 'N/A'} - ${item.name || 'N/A'}`}
                                 </div>
                                 <div className="text-sm text-gray-700 mb-1">
-                                    Lớp: {item.class_room_name}
+                                    Lớp: {(() => {
+                                        // Thử nhiều cách để lấy tên lớp
+                                        if (item.class_room_name) return item.class_room_name;
+                                        if (item.class_room?.name) return item.class_room.name;
+                                        if (item.class_room?.teacher?.name) return `${item.class_room.name} - ${item.class_room.teacher.name}`;
+                                        if (item.lesson?.class_room?.name) return item.lesson.class_room.name;
+                                        if (item.lesson?.class_room?.teacher?.name) return `${item.lesson.class_room.name} - ${item.lesson.class_room.teacher.name}`;
+                                        // Thử lấy từ filter nếu có
+                                        if (filter.class_room && classes.length > 0) {
+                                            const selectedClass = classes.find(c => c.id == filter.class_room);
+                                            if (selectedClass) return selectedClass.name;
+                                        }
+                                        if (item.class_room_id) return `Lớp ID: ${item.class_room_id}`;
+                                        return 'N/A';
+                                    })()}
                                 </div>
                                 <div className="text-sm text-gray-700 mb-1">
-                                    Module: {item.module_name}
+                                    Module: {(() => {
+                                        // Thử nhiều cách để lấy tên module
+                                        if (item.module_name) return item.module_name;
+                                        if (item.module?.name) return item.module.name;
+                                        if (item.lesson?.module?.name) return item.lesson.module.name;
+                                        if (item.module_id) return `${item.module_id}`;
+                                        if (item.lesson?.module) return `${item.lesson.module}`;
+                                        return 'N/A';
+                                    })()}
                                 </div>
                                 <div className="text-sm text-gray-700 mb-1">
-                                    Ngày tạo: {item.lesson?.created_at ? new Date(item.lesson.created_at).toLocaleString() : 'N/A'}
+                                    Ngày tạo: {item.lesson?.created_at ? new Date(item.lesson.created_at).toLocaleString() : item.created_at ? new Date(item.created_at).toLocaleString() : 'N/A'}
+                                </div>
+                                <div className="text-sm mb-1">
+                                    <span className="text-gray-700">Trạng thái: </span>
+                                    <span className={`font-semibold px-2 py-1 rounded-full text-xs ${
+                                        (() => {
+                                            switch(item.status) {
+                                                case 'present': return 'bg-green-100 text-green-800';
+                                                case 'absent': return 'bg-red-100 text-red-800';
+                                                case 'late': return 'bg-yellow-100 text-yellow-800';
+                                                case 'excused': return 'bg-blue-100 text-blue-800';
+                                                default: return 'bg-gray-100 text-gray-800';
+                                            }
+                                        })()
+                                    }`}>
+                                        {(() => {
+                                            switch(item.status) {
+                                                case 'present': return 'Có mặt';
+                                                case 'absent': return 'Vắng mặt';
+                                                case 'late': return 'Đi trễ';
+                                                case 'excused': return 'Vắng có phép';
+                                                default: return item.status || 'N/A';
+                                            }
+                                        })()}
+                                    </span>
                                 </div>
                                 {/* Hiển thị thêm các trường khác nếu cần */}
                             </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 )}
             </div>

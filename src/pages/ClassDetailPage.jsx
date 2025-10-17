@@ -44,7 +44,7 @@ export default function ClassDetailPage() {
     }, [id]);
 
     return (
-        <div className="min-h-screen flex flex-col pt-8">
+        <div className="min-h-screen flex flex-col pt-8 pb-24">
             <div className="flex-1 flex flex-col items-center">
                 <div className="w-full max-w-3xl bg-white rounded-2xl shadow-xl p-6 mb-8">
                     <button

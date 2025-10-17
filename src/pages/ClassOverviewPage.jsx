@@ -53,7 +53,7 @@ export default function ClassOverviewPage() {
     };
 
     return (
-        <div className="flex flex-col items-center min-h-screen pt-8 pb-10">
+        <div className="flex flex-col items-center min-h-screen pt-8 pb-24">
             <h1 className="text-3xl font-bold text-center text-gray-800 mb-8 font-sans">Tổng quan lớp học</h1>
             <div className="w-full max-w-2xl px-2">
                 <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">

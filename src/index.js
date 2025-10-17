@@ -5,8 +5,6 @@ import { BrowserRouter } from 'react-router-dom';
 import store from './app/store';
 import App from './App';
 import './index.css';
-import { initToken } from './services/tokenService';
-import { ApiServices } from './services/ApiServices';
 
 // Gọi initToken và callSessionAPI ngay khi app khởi động
 

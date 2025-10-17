@@ -62,7 +62,7 @@ export default function NewsPage() {
     : news.filter(item => item.category === selectedCategory);
 
   return (
-    <div className="min-h-screen pb-16 bg-gray-50">
+    <div className="min-h-screen pb-24 bg-gray-50">
       {/* Header */}
       <div className="bg-gradient-to-b from-blue-200 to-white rounded-b-3xl shadow-md p-2">
         <div className="flex flex-col items-center">

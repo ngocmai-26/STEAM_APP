@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { initToken, getToken } from '../services/tokenService';
+import { initToken, getToken } from '../constants/api';
 import { ApiServices } from '../services/ApiServices';
 
 export const useAuth = () => {

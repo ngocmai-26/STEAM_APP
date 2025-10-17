@@ -12,7 +12,6 @@ const features = [
   { icon: "🖼️", label: "Hình ảnh học viên", path: "/student-images", gradient: "from-pink-400 to-pink-600", hoverGradient: "from-pink-500 to-pink-700" },
   { icon: "⭐", label: "Đánh giá học viên", path: "/student-evaluation", gradient: "from-yellow-400 to-orange-500", hoverGradient: "from-yellow-500 to-orange-600" },
   { icon: "🏫", label: "Cơ sở vật chất", path: "/facilities", gradient: "from-indigo-400 to-indigo-600", hoverGradient: "from-indigo-500 to-indigo-700" },
-  { icon: "🧸", label: "Khóa học của bé", path: "/kid-courses", gradient: "from-teal-400 to-teal-600", hoverGradient: "from-teal-500 to-teal-700" },
   { icon: "📝", label: "Điểm danh", path: "/attendance", gradient: "from-red-400 to-red-600", hoverGradient: "from-red-500 to-red-700" },
   { icon: "🎓", label: "Tổng quan lớp học", path: "/class", gradient: "from-cyan-400 to-cyan-600", hoverGradient: "from-cyan-500 to-cyan-700" },
   { icon: "📰", label: "Tin tức", path: "/news", gradient: "from-emerald-400 to-emerald-600", hoverGradient: "from-emerald-500 to-emerald-700" },
@@ -94,7 +93,7 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen pb-16 bg-gray-50">
+    <div className="min-h-screen pb-24 bg-gray-50">
       {/* Header */}
       <div className="bg-gradient-to-b from-blue-200 to-white rounded-b-3xl shadow-md p-2">
         <div className="flex flex-col items-center">

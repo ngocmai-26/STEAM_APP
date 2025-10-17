@@ -22,7 +22,7 @@ export default function ProfilePage() {
     }, []);
 
     return (
-        <div className="min-h-screen flex flex-col bg-[#e0fcff]">
+        <div className="min-h-screen flex flex-col bg-[#e0fcff] pb-24">
             <div className="flex-1 flex flex-col items-center justify-center">
                 <div className="w-full max-w-md relative flex flex-col items-center">
                     {/* Avatar nổi lên trên card */}

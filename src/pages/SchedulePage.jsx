@@ -244,7 +244,7 @@ const SchedulePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20">
+    <div className="min-h-screen bg-gray-50 pb-24">
       {/* Header */}
       <div className="bg-white p-4 mx-4 rounded-lg mt-8">
         <h1 className="text-3xl font-bold text-center text-gray-800 mb-4 font-sans">

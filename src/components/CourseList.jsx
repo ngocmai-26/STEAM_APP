@@ -11,25 +11,56 @@ export default function CourseList() {
     const [error, setError] = useState(null);
 
     useEffect(() => {
+        console.log('CourseList: Starting to fetch courses...');
         ApiServices.getCourses()
-            .then(data => {
-                setCourses(data.data); // Sửa ở đây để lấy đúng mảng khóa học
+            .then(response => {
+                console.log('CourseList: API response:', response);
+                console.log('CourseList: Courses data:', response.data);
+                setCourses(response.data || []); // Sửa ở đây để lấy đúng mảng khóa học
                 setLoading(false);
             })
             .catch(err => {
+                console.error('CourseList: API error:', err);
                 setError('Không thể tải danh sách khóa học');
                 setLoading(false);
             });
     }, []);
 
-    if (loading) return <div>Đang tải danh sách khóa học...</div>;
-    if (error) return <div className="text-red-500">{error}</div>;
+    if (loading) {
+        return (
+            <div className="px-4 max-w-4xl mx-auto pb-20 pt-8">
+                <h2 className="text-3xl font-bold text-center text-gray-800 mb-8 font-sans">Các khóa học</h2>
+                <div className="flex items-center justify-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+                    <span className="ml-3 text-gray-600">Đang tải danh sách khóa học...</span>
+                </div>
+            </div>
+        );
+    }
+    
+    if (error) {
+        return (
+            <div className="px-4 max-w-4xl mx-auto pb-20 pt-8">
+                <h2 className="text-3xl font-bold text-center text-gray-800 mb-8 font-sans">Các khóa học</h2>
+                <div className="text-center text-red-500 py-8">
+                    <div className="text-4xl mb-2">❌</div>
+                    <p>{error}</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
-        <div className="px-4 max-w-4xl mx-auto pb-20">
-            <h2 className="text-center text-2xl font-bold my-4">Các khóa học</h2>
-            <div>
-                {courses.map((course, idx) => (
+        <div className="px-4 max-w-4xl mx-auto pb-20 pt-8">
+            <h2 className="text-3xl font-bold text-center text-gray-800 mb-8 font-sans">Các khóa học</h2>
+            {courses.length === 0 ? (
+                <div className="text-center text-gray-500 py-8">
+                    <div className="text-4xl mb-2">📚</div>
+                    <p>Chưa có khóa học nào</p>
+                </div>
+            ) : (
+                <div>
+                    {courses.map((course, idx) => (
                     <div
                         key={course.id}
                         className="bg-white rounded-lg shadow-md p-4 mb-4 flex items-center cursor-pointer hover:shadow-lg transition-shadow"
@@ -55,7 +86,8 @@ export default function CourseList() {
                         </div>
                     </div>
                 ))}
-            </div>
+                </div>
+            )}
             {selectedCourse && (
                 <CourseDetailModal course={selectedCourse} onClose={() => setSelectedCourse(null)} />
             )}

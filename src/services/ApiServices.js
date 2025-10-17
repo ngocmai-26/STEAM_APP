@@ -1,11 +1,11 @@
-import { getToken } from './tokenService';
-
-export const API_BASE_URL = 'https://stem.bdu.edu.vn/steam/apis';
+import { getToken, API_BASE_URL } from '../constants/api';
 
 export const ApiServices = {
   async getCourses() {
     const token = getToken();
-    const response = await fetch(`${API_BASE_URL}/app/courses`, {
+    console.log('🔑 [getCourses] Token:', token ? 'Available' : 'Missing');
+    console.log('🔑 [getCoursessss  ] Token:', token);
+    const response = await fetch(`${API_BASE_URL}/courses`, {
       headers: {
         'Content-Type': 'application/json',
         ...(token && { 'Authorization': `Bearer ${token}` }),
@@ -17,7 +17,8 @@ export const ApiServices = {
 
   async getStudentRegistrations() {
     const token = getToken();
-    const response = await fetch(`${API_BASE_URL}/app/student-registrations`, {
+    console.log('🔑 [getStudentRegistrations] Token:', token ? 'Available' : 'Missing');
+    const response = await fetch(`${API_BASE_URL}/student-registrations`, {
       headers: {
         'Content-Type': 'application/json',
         ...(token && { 'Authorization': `Bearer ${token}` }),
@@ -29,7 +30,7 @@ export const ApiServices = {
 
   async createStudentRegistration(data) {
     const token = getToken();
-    const response = await fetch(`${API_BASE_URL}/app/student-registrations`, {
+    const response = await fetch(`${API_BASE_URL}/student-registrations`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -44,7 +45,7 @@ export const ApiServices = {
   async getClassesByStudent(studentId) {
     const token = getToken();
     const response = await fetch(
-      `${API_BASE_URL}/app/classes?student=${studentId}`,
+      `${API_BASE_URL}/classes?student=${studentId}`,
       {
         headers: {
           'Content-Type': 'application/json',
@@ -59,7 +60,7 @@ export const ApiServices = {
   async getAllClasses() {
     const token = getToken();
     const response = await fetch(
-      `${API_BASE_URL}/app/classes`,
+      `${API_BASE_URL}/classes`,
       {
         headers: {
           'Content-Type': 'application/json',
@@ -72,42 +73,35 @@ export const ApiServices = {
   },
   // Gọi API session để xác thực
   async callSessionAPI() {
-    console.log('🌐 [ApiServices] Starting session API call...');
     try {
       const token = getToken();
-      console.log('🔑 [ApiServices] Token for session API:', token);
+      console.log('🔑 [callSessionAPI] Token:', token ? 'Available' : 'Missing');
 
       if (!token) {
-        console.error('❌ [ApiServices] No access token available');
         throw new Error('No access token available');
       }
 
-      const url = `${API_BASE_URL}/app/auth/session`;
-      const body = JSON.stringify({ token });
-
-      console.log('📡 [ApiServices] Calling session API:', url);
-      console.log('📋 [ApiServices] Request body:', body);
+      const url = `${API_BASE_URL}/auth/session`;
+      console.log('🔑 [callSessionAPI] URL:', url);
 
       const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body,
+        body: JSON.stringify({ token }),
       });
 
-      console.log('📊 [ApiServices] Response status:', response.status);
-
       if (!response.ok) {
-        console.error('❌ [ApiServices] HTTP error! status:', response.status);
+        const errorText = await response.text();
+        console.error('Session API error:', response.status, errorText);
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const data = await response.json();
-      console.log('✅ [ApiServices] Session API response data:', data);
       return data;
     } catch (error) {
-      console.error('💥 [ApiServices] Error calling session API:', error);
+      console.error('Session API failed:', error.message);
       throw error;
     }
   },
@@ -150,7 +144,7 @@ export const ApiServices = {
 
   async getAllStudents() {
     const token = getToken();
-    const response = await fetch(`${API_BASE_URL}/app/student-registrations`, {
+    const response = await fetch(`${API_BASE_URL}/student-registrations`, {
       headers: {
         'Content-Type': 'application/json',
         ...(token && { 'Authorization': `Bearer ${token}` }),
@@ -164,7 +158,7 @@ export const ApiServices = {
 
   async getCourseModules({ student, class_room } = {}) {
     const token = getToken();
-    let url = `${API_BASE_URL}/app/course-modules`;
+    let url = `${API_BASE_URL}/course-modules`;
     const params = [];
     if (student) params.push(`student=${student}`);
     if (class_room) params.push(`class_room=${class_room}`);
@@ -181,7 +175,7 @@ export const ApiServices = {
 
   async getLessons({ student, class_room, module } = {}) {
     const token = getToken();
-    let url = `${API_BASE_URL}/app/lessons`;
+    let url = `${API_BASE_URL}/lessons`;
     const params = [];
     if (student) params.push(`student=${student}`);
     if (class_room) params.push(`class_room=${class_room}`);
@@ -199,7 +193,7 @@ export const ApiServices = {
 
   async getLessonGalleries({ student, class_room, module, lesson } = {}) {
     const token = getToken();
-    let url = `${API_BASE_URL}/app/lesson-galleries`;
+    let url = `${API_BASE_URL}/lesson-galleries`;
     const params = [];
     if (student) params.push(`student=${student}`);
     if (class_room) params.push(`class_room=${class_room}`);
@@ -218,7 +212,7 @@ export const ApiServices = {
 
   async getLessonById(id) {
     const token = getToken();
-    const response = await fetch(`${API_BASE_URL}/app/lessons?id=${id}`, {
+    const response = await fetch(`${API_BASE_URL}/lessons?id=${id}`, {
       headers: {
         'Content-Type': 'application/json',
         ...(token && { 'Authorization': `Bearer ${token}` }),
@@ -230,7 +224,7 @@ export const ApiServices = {
 
   async getLessonEvaluations({ student, class_room, module, lesson } = {}) {
     const token = getToken();
-    let url = `${API_BASE_URL}/app/lesson-evaluations`;
+    let url = `${API_BASE_URL}/lesson-evaluations`;
     const params = [];
     if (student) params.push(`student=${student}`);
     if (class_room) params.push(`class_room=${class_room}`);
@@ -249,7 +243,7 @@ export const ApiServices = {
 
   async getAttendances() {
     const token = getToken();
-    const response = await fetch(`${API_BASE_URL}/app/attendances`, {
+    const response = await fetch(`${API_BASE_URL}/attendances`, {
       headers: {
         'Content-Type': 'application/json',
         ...(token && { 'Authorization': `Bearer ${token}` }),
@@ -261,7 +255,7 @@ export const ApiServices = {
 
   async getTimeTables({ student, class_room } = {}) {
     const token = getToken();
-    let url = `${API_BASE_URL}/app/time-tables`;
+    let url = `${API_BASE_URL}/time-tables`;
     const params = [];
     if (student) params.push(`student=${student}`);
     if (class_room) params.push(`class_room=${class_room}`);
@@ -278,7 +272,7 @@ export const ApiServices = {
 
   async getFacilities() {
     const token = getToken();
-    const response = await fetch(`${API_BASE_URL}/app/facilities`, {
+    const response = await fetch(`${API_BASE_URL}/facilities`, {
       headers: {
         'Content-Type': 'application/json',
         ...(token && { 'Authorization': `Bearer ${token}` }),
@@ -290,7 +284,7 @@ export const ApiServices = {
 
   async getNews() {
     const token = getToken();
-    const response = await fetch(`${API_BASE_URL}/app/news`, {
+    const response = await fetch(`${API_BASE_URL}/news`, {
       headers: {
         'Content-Type': 'application/json',
         ...(token && { 'Authorization': `Bearer ${token}` }),

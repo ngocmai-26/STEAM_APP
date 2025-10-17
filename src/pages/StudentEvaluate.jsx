@@ -63,7 +63,7 @@ export default function StudentEvaluate() {
     }, [filter]);
 
     return (
-        <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 to-pink-50 pt-8">
+        <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 to-pink-50 pt-8 pb-24">
             <div className="flex-1 flex flex-col items-center">
                 <h1 className="text-3xl font-bold text-gray-800 mb-8 font-sans">Đánh giá học viên</h1>
                 {/* Filter */}
@@ -127,12 +127,12 @@ export default function StudentEvaluate() {
                                 const extraScores = scoreEntries.slice(3);
                                 return (
                                     <div key={ev.id} className="bg-white rounded-2xl shadow-md p-6 border border-blue-100">
-                                        <div className="flex flex-wrap gap-4 items-center mb-2">
-                                            <div className="font-bold text-blue-700 text-lg flex-1">
-                                                {ev.lesson ? `Bài ${ev.lesson.sequence_number} - ${ev.lesson.name}` : 'Buổi học ?'}
+                                        <div className=" items-center mb-2">
+                                            <div className="font-bold text-blue-700 text-lg">
+                                                {ev.lesson ? `Bài ${ev.lesson.sequence_number} ` : 'Buổi học ?'}
                                             </div>
-                                            <div className="text-sm text-gray-500">Lớp: {ev.class_room_name}</div>
                                             <div className="text-sm text-gray-500">Học phần: {ev.module_name}</div>
+                                            <div className="text-sm text-gray-500">Lớp: {ev.class_room_name}</div>
                                         </div>
                                         <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mt-2`}>
                                             {mainScores.map(([key, score]) => (
