@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ApiServices } from '../services/ApiServices';
 import '../css/FacilityPage.css';
 import Footer from '../components/Footer';
+import { getImageUrl } from '../utils/imageUtils';
 
 const ImageSlider = ({ images }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -37,7 +38,7 @@ const ImageSlider = ({ images }) => {
           ‹
         </button>
         <img 
-          src={images[currentIndex].image_url || images[currentIndex]} 
+          src={getImageUrl(images[currentIndex].image_url || images[currentIndex])} 
           alt="facility" 
           className="slider-image"
         />
@@ -67,10 +68,7 @@ const FacilityCard = ({ facility }) => {
       <div className="facility-content">
         <h3 className="facility-title">{facility.name}</h3>
         <p className="facility-description">{facility.description}</p>
-        <div className="facility-footer">
-          <span>Created: {new Date(facility.created_at).toLocaleDateString()}</span>
-          <span>ID: {facility.id}</span>
-        </div>
+       
       </div>
     </div>
   );

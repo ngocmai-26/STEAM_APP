@@ -2,6 +2,7 @@ import React from 'react';
 import Footer from './Footer';
 import { formatPriceVND } from '../utils/formatPrice';
 import { formatDuration } from '../utils/formatTime';
+import { getImageUrl } from '../utils/imageUtils';
 
 export default function CourseDetailModal({ course, onClose }) {
     if (!course) return null;
@@ -23,7 +24,7 @@ export default function CourseDetailModal({ course, onClose }) {
                     </h3>
                     {course.thumbnail_url && (
                         <img
-                            src={course.thumbnail_url}
+                            src={getImageUrl(course.thumbnail_url)}
                             alt={course.name}
                             className="w-full h-48 object-cover rounded-lg mb-5 border border-blue-100 shadow"
                         />

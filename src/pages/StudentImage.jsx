@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ApiServices } from '../services/ApiServices';
 import Footer from '../components/Footer';
+import { getImageUrl } from '../utils/imageUtils';
 
 function ImageModal({ images, currentIdx, onClose }) {
     const [idx, setIdx] = useState(currentIdx || 0);
@@ -18,7 +19,7 @@ function ImageModal({ images, currentIdx, onClose }) {
                         aria-label="Trước"
                     >&#8592;</button>
                     <img
-                        src={images[idx]}
+                        src={getImageUrl(images[idx])}
                         alt="Hình học viên phóng to"
                         className="w-full max-w-[400px] max-h-[60vh] object-contain rounded-2xl border-4 border-white shadow-xl bg-white"
                     />
@@ -167,6 +168,7 @@ export default function StudentImage() {
                         {galleries.map((gallery, idx) => {
                             const lesson = lessonMap[gallery.lesson];
                             const images = gallery.image_urls || [];
+                            const convertedImages = images.map(url => getImageUrl(url));
                             if (images.length === 0) return null;
                             return (
                                 <div key={gallery.id || idx} className="w-full max-w-3xl mx-auto">
@@ -178,32 +180,32 @@ export default function StudentImage() {
                                                 <h3 className="font-bold text-blue-700 text-lg">{lesson ? `${lesson.name}` : 'Không rõ buổi học'}</h3>
                                             </div>
                                             <div className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-medium">
-                                                {images.length} ảnh
+                                                {convertedImages.length} ảnh
                                             </div>
                                         </div>
                                     </div>
 
                                     {/* Grid ảnh với style đẹp */}
                                     <div className="flex gap-6">
-                                        {images.slice(0, 3).map((img, i) => (
-                                            <img
-                                                key={i}
-                                                src={img}
-                                                alt={lesson ? lesson.name : 'Hình học viên'}
-                                                className="w-32 h-32 object-cover rounded-xl bg-gray-200 shadow hover:scale-105 transition cursor-pointer border border-gray-200"
-                                                onClick={() => setModal({ open: true, images, idx: i })}
-                                            />
-                                        ))}
+                        {convertedImages.slice(0, 3).map((img, i) => (
+                            <img
+                                key={i}
+                                src={img}
+                                alt={lesson ? lesson.name : 'Hình học viên'}
+                                className="w-32 h-32 object-cover rounded-xl bg-gray-200 shadow hover:scale-105 transition cursor-pointer border border-gray-200"
+                                onClick={() => setModal({ open: true, images: convertedImages, idx: i })}
+                            />
+                        ))}
                                     </div>
 
                                     {/* Button xem tất cả ảnh */}
-                                    {images.length > 3 && (
+                                    {convertedImages.length > 3 && (
                                         <div className="text-center mb-6">
                                             <button
                                                 className="bg-white text-blue-600 px-6 py-2 rounded-lg hover:bg-gray-50 transition-colors duration-200 font-medium shadow-lg border border-gray-200"
-                                                onClick={() => setModal({ open: true, images, idx: 0 })}
+                                                onClick={() => setModal({ open: true, images: convertedImages, idx: 0 })}
                                             >
-                                                👁️ Xem tất cả {images.length} ảnh
+                                                👁️ Xem tất cả {convertedImages.length} ảnh
                                             </button>
                                         </div>
                                     )}

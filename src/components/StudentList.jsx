@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ApiServices } from '../services/ApiServices';
 import StudentDetailModal from './StudentDetailModal';
+import { getImageUrl } from '../utils/imageUtils';
 
 export default function StudentList() {
     const [students, setStudents] = useState([]);
@@ -81,7 +82,7 @@ export default function StudentList() {
                             <div key={student.id || idx} className="bg-white rounded-xl shadow p-4 flex flex-col gap-2">
                                 <div className="flex items-center">
                                     <img
-                                        src={student.avatar_url || '/img/default-avatar.png'}
+                                        src={getImageUrl(student.avatar_url, '/img/default-avatar.png')}
                                         alt={student.first_name + ' ' + student.last_name}
                                         className="w-16 h-16 rounded-full mr-4 border"
                                     />

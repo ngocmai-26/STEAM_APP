@@ -4,6 +4,7 @@ import Footer from "../components/Footer";
 import { ApiServices } from '../services/ApiServices';
 import StudentClasses from '../components/StudentClasses';
 import { openWebview } from 'zmp-sdk';
+import { getImageUrl } from '../utils/imageUtils';
 
 const features = [
   { icon: "📄", label: "Tổng quan khóa học", path: "/courses", gradient: "from-blue-400 to-blue-600", hoverGradient: "from-blue-500 to-blue-700" },
@@ -37,29 +38,36 @@ export default function HomePage() {
         const news = newsData.data || [];
 
         // Transform news data for activities display (take first 4 items)
-        const activitiesFromNews = news.slice(0, 4).map(item => ({
-          img: item.image || "https://images.unsplash.com/photo-1513258496099-48168024aec0?auto=format&fit=crop&w=400&q=80",
-          title: item.title,
-          date: new Date(item.created_at || item.date).toLocaleDateString('vi-VN'),
-          id: item.id
-        }));
+        const activitiesFromNews = news.slice(0, 4).map(item => {
+          // Thử convert URL, nhưng nếu không convert được thì dùng URL gốc như code web
+          let imageUrl = item.image;
+          if (item.image && item.image.includes('drive.google.com')) {
+            const converted = getImageUrl(item.image, null);
+            // Nếu convert thành công và khác URL gốc, dùng converted
+            // Nếu convert trả về null hoặc giống URL gốc, dùng URL gốc
+            if (converted && converted !== item.image) {
+              imageUrl = converted;
+            } else {
+              // Dùng URL gốc như code web
+              imageUrl = item.image;
+            }
+          }
+          console.log('🖼️ [HomePage] Original image URL:', item.image);
+          console.log('🖼️ [HomePage] Final image URL:', imageUrl);
+          return {
+            image: imageUrl,
+            title: item.title,
+            date: new Date(item.created_at || item.date).toLocaleDateString('vi-VN'),
+            link: item.link,
+            id: item.id
+          };
+        });
 
         setActivities(activitiesFromNews);
       } catch (error) {
         console.error('Error fetching data:', error);
         // Fallback to sample data if API fails
-        setActivities([
-          {
-            img: "https://images.unsplash.com/photo-1513258496099-48168024aec0?auto=format&fit=crop&w=400&q=80",
-            title: "Học viên đang học lập trình Game tynker",
-            date: "02/06/2025",
-          },
-          {
-            img: "https://images.unsplash.com/photo-1513258496099-48168024aec0?auto=format&fit=crop&w=400&q=80",
-            title: "Học viên đang học lập trình Game tynker",
-            date: "02/06/2025",
-          },
-        ]);
+        
       } finally {
         setLoading(false);
       }
@@ -103,7 +111,7 @@ export default function HomePage() {
         </div>
       </div>
       {/* Features grid */}
-      <div className="grid grid-cols-4 gap-3 px-3 py-4">
+      <div className="grid grid-cols-3 gap-3 px-3 py-4">
         {features.map((f, idx) => (
           <Link
             key={idx}
@@ -139,11 +147,44 @@ export default function HomePage() {
         ) : (
           <div className="flex gap-4 overflow-x-auto pb-4">
             {activities.map((a, idx) => (
-              <div key={idx} className="min-w-[180px] h-64 bg-white rounded-xl shadow-md p-2 flex-shrink-0" onClick={() => {
-                openUrlInWebview(a.link);
+              <div key={a.id || idx} className="min-w-[180px] h-64 bg-white rounded-xl shadow-md p-2 flex-shrink-0 cursor-pointer hover:shadow-lg transition-shadow" onClick={() => {
+                if (a.link) {
+                  openUrlInWebview(a.link);
+                }
               }}>
-                <img src={a.img} alt="activity" className="w-full h-48 object-cover rounded-lg mb-2" />
-                <div className="text-xs font-semibold text-gray-700 mb-1">{a.title}</div>
+                {a.image ? (
+                  <div className="w-full h-48 rounded-lg mb-2 bg-gray-100 flex items-center justify-center overflow-hidden relative">
+                    <img 
+                      src={a.image} 
+                      alt={a.title || "activity"} 
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        console.error('❌ [HomePage] Image failed to load:', e.target.src);
+                        // Ẩn ảnh và hiển thị placeholder
+                        e.target.style.display = 'none';
+                        const placeholder = e.target.parentElement.querySelector('.image-placeholder');
+                        if (placeholder) {
+                          placeholder.style.display = 'flex';
+                        }
+                      }}
+                      onLoad={(e) => {
+                        console.log('✅ [HomePage] Image loaded successfully:', e.target.src);
+                        const placeholder = e.target.parentElement.querySelector('.image-placeholder');
+                        if (placeholder) {
+                          placeholder.style.display = 'none';
+                        }
+                      }}
+                    />
+                    <div className="image-placeholder absolute inset-0 flex items-center justify-center bg-gray-100 text-gray-400" style={{ display: 'none' }}>
+                      <span className="text-4xl">🖼️</span>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="w-full h-48 rounded-lg mb-2 bg-gray-100 flex items-center justify-center">
+                    <span className="text-4xl text-gray-400">🖼️</span>
+                  </div>
+                )}
+                <div className="text-xs font-semibold text-gray-700 mb-1 line-clamp-2">{a.title}</div>
                 <div className="text-[10px] text-gray-400 text-right">{a.date}</div>
               </div>
             ))}
@@ -172,7 +213,7 @@ export default function HomePage() {
                   onClick={() => handleSelectStudent(student.id)}
                 >
                   <img
-                    src={student.app_user?.avatar_url || '/img/default-avatar.png'}
+                    src={getImageUrl(student.app_user?.avatar_url, '/img/default-avatar.png')}
                     alt={student.app_user?.name}
                     className="w-8 h-8 rounded-full border"
                   />

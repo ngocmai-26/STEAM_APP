@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ApiServices } from '../services/ApiServices';
 import Footer from '../components/Footer';
+import { getImageUrl } from '../utils/imageUtils';
 
 export default function ProfilePage() {
     const [user, setUser] = useState(null);
@@ -28,7 +29,7 @@ export default function ProfilePage() {
                     {/* Avatar nổi lên trên card */}
                     <div className="absolute left-1/2 -top-14 transform -translate-x-1/2 z-20">
                         <img
-                            src={user?.avatar_url || '/img/default-avatar.png'}
+                            src={getImageUrl(user?.avatar_url, '/img/default-avatar.png')}
                             alt={user?.name}
                             className="w-28 h-28 rounded-full border-4 border-white shadow-lg object-cover bg-white"
                         />

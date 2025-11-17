@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Footer from "../components/Footer";
 import { ApiServices } from '../services/ApiServices';
 import { openWebview } from 'zmp-sdk';
+import { getImageUrl } from '../utils/imageUtils';
 
 
 export default function NewsPage() {
@@ -38,7 +39,7 @@ export default function NewsPage() {
           id: item.id,
           title: item.title,
           summary: item.summary || item.description || 'Không có mô tả',
-          image: item.image || "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?auto=format&fit=crop&w=400&q=80",
+          image: getImageUrl(item.image, "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?auto=format&fit=crop&w=400&q=80"),
           date: new Date(item.created_at || item.date).toLocaleDateString('vi-VN'),
           category: item.category || 'general',
           readTime: item.read_time || '3 phút đọc'

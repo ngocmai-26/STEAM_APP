@@ -48,7 +48,8 @@ export const initToken = async () => {
     
     if (isDevelopment) {
       console.log('🛠️ [initToken] Development environment, using mock token');
-      accessToken = "xNjXNrwTqr7iVsrPNf_VKEXqR5jHYAHHk0eI3dIzprEp8nqwS9QlCDqePbOqZTSYWJ1WJ5cmjK6E5WKRVwFRKOqc6LzydgyulNndTapeqG2BO146OT_V3uWyR5DStue2cqz13IwlyLBxDKC85QxoHDqZ91CEm-vasbGuAXN1qdcXU1SBK-JVRv5b4Y92_S0fYMK0LLc1orcHPWOmHeFYEQiZDp1HjELlvZTKPogYdHV40Lrj1xtgOjHVBsaS_CKuttiNJYtFsW6VKMnTRVUkLzbSOIGeoQTvdduH3t3-er2qQsy9KikkGxTI4KbdyFueqKeZMWZy-rtEH2a63Ft4OE1aCna6zTuVjHPjIqsBg3Yb4tP5I8-PAhaCLqPyZuy9fX1_0KohdWQe5bDQNfJj2Ear8bjTbUiIRas0qeS-MOVKKW"
+      accessToken = "skr1AytERdpRwKqjpSnYVT_YJ2_2smKTgVrNI_JQEXsv-L8Kzui2AeMb80h6_0eZeOv14l3u3IMVWrbmxwOxKFBSG5cae1HVzDuvSQUh5cJXn3LMl99YIEtmAdYuba8frz0kVAJgV6lMjYqwdlOF1Cks8IpUbt4RcFHV7zwB7KonwsPOqfSwT9NI4cVqhq99lliTSUlUG2-ff1uwsSfrBQg57YlhvZq6gBbj9lJc9I_flWzn-F15OEIU7NEFrcudcfO1BOhiImETbXuKxyiyExgDO0_FtIuzdezO0jJzC3EafruUnVuHCAYDSIJAt3ibrgL2D87VQYBrXGGKeDjf0UUX2LIY_sH0zQfFThxr1s7Fi2vgk9z0NQZnQ57rqmPiXuDwG9AiEH7W_1eHbeLH1u3b2135Yq07jzqR9oGN6cVAr6b_"
+
       console.log('✅ [initToken] Mock token set');
     } else {
       console.log('🚀 [initToken] Production environment, using real Zalo SDK');
@@ -60,7 +61,8 @@ export const initToken = async () => {
           },
           fail: (error) => {
             console.log('⚠️ [initToken] Real token failed, using fallback');
-            resolve("xNjXNrwTqr7iVsrPNf_VKEXqR5jHYAHHk0eI3dIzprEp8nqwS9QlCDqePbOqZTSYWJ1WJ5cmjK6E5WKRVwFRKOqc6LzydgyulNndTapeqG2BO146OT_V3uWyR5DStue2cqz13IwlyLBxDKC85QxoHDqZ91CEm-vasbGuAXN1qdcXU1SBK-JVRv5b4Y92_S0fYMK0LLc1orcHPWOmHeFYEQiZDp1HjELlvZTKPogYdHV40Lrj1xtgOjHVBsaS_CKuttiNJYtFsW6VKMnTRVUkLzbSOIGeoQTvdduH3t3-er2qQsy9KikkGxTI4KbdyFueqKeZMWZy-rtEH2a63Ft4OE1aCna6zTuVjHPjIqsBg3Yb4tP5I8-PAhaCLqPyZuy9fX1_0KohdWQe5bDQNfJj2Ear8bjTbUiIRas0qeS-MOVKKW");
+            resolve("skr1AytERdpRwKqjpSnYVT_YJ2_2smKTgVrNI_JQEXsv-L8Kzui2AeMb80h6_0eZeOv14l3u3IMVWrbmxwOxKFBSG5cae1HVzDuvSQUh5cJXn3LMl99YIEtmAdYuba8frz0kVAJgV6lMjYqwdlOF1Cks8IpUbt4RcFHV7zwB7KonwsPOqfSwT9NI4cVqhq99lliTSUlUG2-ff1uwsSfrBQg57YlhvZq6gBbj9lJc9I_flWzn-F15OEIU7NEFrcudcfO1BOhiImETbXuKxyiyExgDO0_FtIuzdezO0jJzC3EafruUnVuHCAYDSIJAt3ibrgL2D87VQYBrXGGKeDjf0UUX2LIY_sH0zQfFThxr1s7Fi2vgk9z0NQZnQ57rqmPiXuDwG9AiEH7W_1eHbeLH1u3b2135Yq07jzqR9oGN6cVAr6b_"
+);
           }
         });
       });
@@ -71,7 +73,8 @@ export const initToken = async () => {
   } catch (error) {
     console.error('💥 [initToken] Failed to initialize access token:', error);
     // Fallback token for development
-    accessToken = "xNjXNrwTqr7iVsrPNf_VKEXqR5jHYAHHk0eI3dIzprEp8nqwS9QlCDqePbOqZTSYWJ1WJ5cmjK6E5WKRVwFRKOqc6LzydgyulNndTapeqG2BO146OT_V3uWyR5DStue2cqz13IwlyLBxDKC85QxoHDqZ91CEm-vasbGuAXN1qdcXU1SBK-JVRv5b4Y92_S0fYMK0LLc1orcHPWOmHeFYEQiZDp1HjELlvZTKPogYdHV40Lrj1xtgOjHVBsaS_CKuttiNJYtFsW6VKMnTRVUkLzbSOIGeoQTvdduH3t3-er2qQsy9KikkGxTI4KbdyFueqKeZMWZy-rtEH2a63Ft4OE1aCna6zTuVjHPjIqsBg3Yb4tP5I8-PAhaCLqPyZuy9fX1_0KohdWQe5bDQNfJj2Ear8bjTbUiIRas0qeS-MOVKKW"
+    accessToken = "skr1AytERdpRwKqjpSnYVT_YJ2_2smKTgVrNI_JQEXsv-L8Kzui2AeMb80h6_0eZeOv14l3u3IMVWrbmxwOxKFBSG5cae1HVzDuvSQUh5cJXn3LMl99YIEtmAdYuba8frz0kVAJgV6lMjYqwdlOF1Cks8IpUbt4RcFHV7zwB7KonwsPOqfSwT9NI4cVqhq99lliTSUlUG2-ff1uwsSfrBQg57YlhvZq6gBbj9lJc9I_flWzn-F15OEIU7NEFrcudcfO1BOhiImETbXuKxyiyExgDO0_FtIuzdezO0jJzC3EafruUnVuHCAYDSIJAt3ibrgL2D87VQYBrXGGKeDjf0UUX2LIY_sH0zQfFThxr1s7Fi2vgk9z0NQZnQ57rqmPiXuDwG9AiEH7W_1eHbeLH1u3b2135Yq07jzqR9oGN6cVAr6b_"
+
     console.log('🔄 [initToken] Using fallback token');
     return accessToken;
   }

@@ -1,4 +1,5 @@
 import React from 'react';
+import { getImageUrl } from '../utils/imageUtils';
 
 export default function StudentDetailModal({ student, onClose }) {
     if (!student) return null;
@@ -17,7 +18,7 @@ export default function StudentDetailModal({ student, onClose }) {
                 </h3>
                 <div className="flex flex-col items-center mb-4">
                     <img
-                        src={student.avatar_url || '/img/default-avatar.png'}
+                        src={getImageUrl(student.avatar_url, '/img/default-avatar.png')}
                         alt={student.first_name + ' ' + student.last_name}
                         className="w-24 h-24 rounded-full border mb-2"
                     />

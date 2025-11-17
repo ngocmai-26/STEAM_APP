@@ -3,6 +3,7 @@ import { ApiServices } from '../services/ApiServices';
 import CourseDetailModal from './CourseDetailModal';
 import { formatPriceVND } from '../utils/formatPrice';
 import { formatDuration } from '../utils/formatTime';
+import { getImageUrl } from '../utils/imageUtils';
 
 export default function CourseList() {
     const [courses, setCourses] = useState([]);
@@ -67,7 +68,7 @@ export default function CourseList() {
                         onClick={() => setSelectedCourse(course)}
                     >
                         {course.thumbnail_url && (
-                            <img src={course.thumbnail_url} alt={course.name} className="w-20 h-20 object-cover rounded mr-4" />
+                            <img src={getImageUrl(course.thumbnail_url)} alt={course.name} className="w-20 h-20 object-cover rounded mr-4" />
                         )}
                         <div className="flex-1">
                             <div className="font-bold text-lg">{course.name}</div>
