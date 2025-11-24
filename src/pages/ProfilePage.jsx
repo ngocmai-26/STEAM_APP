@@ -3,12 +3,15 @@ import { ApiServices } from '../services/ApiServices';
 import Footer from '../components/Footer';
 import { getImageUrl } from '../utils/imageUtils';
 import steamAILogo from '../img/logo.png';
+import { authorize, getUserInfo, getSetting, getAccessToken } from 'zmp-sdk/apis';
+import { initToken } from '../constants/api';
 
 export default function ProfilePage() {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [avatarError, setAvatarError] = useState(false);
+    const [hasRequestedPermission, setHasRequestedPermission] = useState(false);
 
     // Cache avatar URL để tránh re-compute mỗi lần render
     const avatarUrl = useMemo(() => {
@@ -21,45 +24,149 @@ export default function ProfilePage() {
     useEffect(() => {
         const loadUserData = async () => {
             setLoading(true);
+            setError(null);
             try {
-                // Lấy dữ liệu từ session API (đã có name, picture, id)
-                const sessionData = await ApiServices.callSessionAPI();
-                console.log('📊 [ProfilePage] Session data:', sessionData);
-                
-                if (sessionData && sessionData.data) {
-                    const sessionUser = sessionData.data;
-                    // Map dữ liệu từ session API
-                    const userData = {
-                        name: sessionUser.name || 'Người dùng',
-                        id: sessionUser.id || '',
-                        avatar_url: sessionUser.picture?.data?.url || null,
+                // Bước 1: Khởi tạo token trước
+                await initToken();
+                const token = await getAccessToken();
+                console.log('🔑 [ProfilePage] Token initialized:', token ? 'Available' : 'Missing');
+
+                // Bước 2: Lấy dữ liệu từ session API (không cần quyền userInfo)
+                let sessionData = null;
+                try {
+                    sessionData = await ApiServices.callSessionAPI();
+                    console.log('📊 [ProfilePage] Session data:', sessionData);
+                } catch (err) {
+                    console.warn('⚠️ [ProfilePage] Session API failed:', err);
+                }
+
+                // Bước 3: Kiểm tra và xin quyền userInfo (nếu cần)
+                // Chỉ xin quyền 1 lần trong session này để tránh hỏi lại liên tục
+                let zaloUserInfo = null;
+                try {
+                    const settings = await getSetting();
+                    console.log('🔐 [ProfilePage] All settings:', settings);
+                    // Permission nằm trong settings.authSetting, không phải settings trực tiếp
+                    const hasUserInfoPermission = settings?.authSetting?.['scope.userInfo'] === true;
+                    console.log('🔐 [ProfilePage] Current permission status:', hasUserInfoPermission);
+                    console.log('🔐 [ProfilePage] Has requested permission in this session:', hasRequestedPermission);
+
+                    if (!hasUserInfoPermission && !hasRequestedPermission) {
+                        console.log('🔐 [ProfilePage] Requesting user info permission...');
+                        setHasRequestedPermission(true); // Đánh dấu đã hỏi rồi
+                        try {
+                            const authResult = await authorize({
+                                scopes: ['scope.userInfo']
+                            });
+                            console.log('🔐 [ProfilePage] Authorization result:', authResult);
+                            
+                            if (authResult['scope.userInfo'] === true) {
+                                // Sau khi có quyền, gọi lại getAccessToken
+                                console.log('🔄 [ProfilePage] Refreshing token after permission granted...');
+                                await initToken();
+                                const newToken = await getAccessToken();
+                                console.log('🔑 [ProfilePage] New token after permission:', newToken ? 'Available' : 'Missing');
+                                
+                                // Đợi một chút để Zalo sync permission và token
+                                await new Promise(resolve => setTimeout(resolve, 1000));
+                                
+                                // Nếu authResult đã confirm permission, không cần check lại, lấy user info luôn
+                                console.log('✅ [ProfilePage] Permission granted, getting user info immediately...');
+                                try {
+                                    zaloUserInfo = await getUserInfo();
+                                    console.log('✅ [ProfilePage] Zalo user info after authorize:', zaloUserInfo);
+                                    
+                                    // Đánh dấu đã có zaloUserInfo để ưu tiên khi map dữ liệu
+                                    if (zaloUserInfo?.userInfo) {
+                                        console.log('✅ [ProfilePage] Successfully got Zalo user info, will merge with session data');
+                                    }
+                                } catch (getUserInfoErr) {
+                                    console.warn('⚠️ [ProfilePage] getUserInfo failed after authorize, will use session data:', getUserInfoErr);
+                                    // Tiếp tục với session API nếu getUserInfo fail
+                                }
+                            } else {
+                                // User từ chối, không hỏi lại nữa
+                                console.log('⚠️ [ProfilePage] User denied permission');
+                            }
+                        } catch (authErr) {
+                            console.warn('⚠️ [ProfilePage] Permission denied or error:', authErr);
+                            // Tiếp tục với session API nếu user từ chối
+                        }
+                    } else if (hasUserInfoPermission) {
+                        // Đã có quyền, lấy thông tin trực tiếp
+                        console.log('✅ [ProfilePage] Permission already granted, getting user info...');
+                        try {
+                            zaloUserInfo = await getUserInfo();
+                            console.log('✅ [ProfilePage] Zalo user info:', zaloUserInfo);
+                        } catch (getUserInfoErr) {
+                            console.warn('⚠️ [ProfilePage] getUserInfo failed:', getUserInfoErr);
+                            // Tiếp tục với session API nếu getUserInfo fail
+                        }
+                    } else {
+                        // Đã hỏi rồi nhưng không có quyền, không hỏi lại
+                        console.log('⚠️ [ProfilePage] Permission already requested in this session, skipping...');
+                    }
+                } catch (err) {
+                    console.warn('⚠️ [ProfilePage] Could not get Zalo user info:', err);
+                    // Tiếp tục với session API
+                }
+
+                // Bước 4: Kết hợp dữ liệu từ Zalo SDK và Session API
+                let userData = {
+                    name: 'Người dùng',
+                    id: '',
+                    avatar_url: null,
+                    phone_number: '',
+                    app_user_id: ''
+                };
+
+                // Kiểm tra cấu trúc sessionData: từ log, dữ liệu nằm trong sessionData.data trực tiếp
+                const sessionUser = sessionData?.data || null;
+                console.log('📋 [ProfilePage] Session user extracted:', sessionUser);
+                console.log('📋 [ProfilePage] Session user name:', sessionUser?.name);
+                console.log('📋 [ProfilePage] Session user id:', sessionUser?.id);
+
+                if (sessionUser) {
+                    // Ưu tiên dữ liệu từ Zalo SDK, fallback về session API
+                    userData = {
+                        name: zaloUserInfo?.userInfo?.name || sessionUser.name || 'Người dùng',
+                        id: sessionUser.id || zaloUserInfo?.userInfo?.id || '',
+                        avatar_url: zaloUserInfo?.userInfo?.avatar || sessionUser.picture?.data?.url || sessionUser.avatar_url || null,
                         phone_number: sessionUser.phone_number || '',
-                        app_user_id: sessionUser.id || ''
+                        app_user_id: sessionUser.id || zaloUserInfo?.userInfo?.id || ''
                     };
-                    console.log('✅ [ProfilePage] User data mapped:', userData);
-                    setUser(userData);
-                    setAvatarError(false); // Reset avatar error khi có user mới
+                    console.log('✅ [ProfilePage] User data mapped from session:', userData);
+                } else if (zaloUserInfo) {
+                    // Nếu không có session data nhưng có Zalo user info
+                    userData = {
+                        name: zaloUserInfo?.userInfo?.name || 'Người dùng',
+                        id: zaloUserInfo?.userInfo?.id || '',
+                        avatar_url: zaloUserInfo?.userInfo?.avatar || null,
+                        phone_number: '',
+                        app_user_id: zaloUserInfo?.userInfo?.id || ''
+                    };
+                    console.log('✅ [ProfilePage] Using Zalo user info only:', userData);
                 } else {
                     // Fallback: Thử lấy từ getStudentRegistrations
-                    console.log('⚠️ [ProfilePage] No session data, trying getStudentRegistrations...');
-                    const res = await ApiServices.getStudentRegistrations();
-                    const first = res.data && res.data.length > 0 ? res.data[0].app_user : null;
-                    if (first) {
-                        setUser(first);
-                    } else {
-                        // Vẫn set user với dữ liệu mặc định để hiển thị avatar và tên
-                        setUser({
-                            name: 'Người dùng',
-                            id: '',
-                            avatar_url: null,
-                            phone_number: '',
-                            app_user_id: ''
-                        });
+                    console.log('⚠️ [ProfilePage] No session/Zalo data, trying getStudentRegistrations...');
+                    try {
+                        const res = await ApiServices.getStudentRegistrations();
+                        const first = res.data && res.data.length > 0 ? res.data[0].app_user : null;
+                        if (first) {
+                            userData = first;
+                            console.log('✅ [ProfilePage] Using student registration data:', userData);
+                        }
+                    } catch (err) {
+                        console.warn('⚠️ [ProfilePage] getStudentRegistrations failed:', err);
                     }
                 }
+
+                console.log('✅ [ProfilePage] Final userData before setting:', userData);
+                setUser(userData);
+                setAvatarError(false);
+                console.log('✅ [ProfilePage] User state set, setting loading to false');
             } catch (err) {
                 console.error('❌ [ProfilePage] Error loading user data:', err);
-                // Vẫn set user với dữ liệu mặc định để hiển thị avatar và tên
                 setUser({
                     name: 'Người dùng',
                     id: '',
@@ -69,6 +176,7 @@ export default function ProfilePage() {
                 });
                 setError('Không thể tải thông tin tài khoản');
             } finally {
+                console.log('🔄 [ProfilePage] Finally block: setting loading to false');
                 setLoading(false);
             }
         };
