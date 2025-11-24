@@ -2,16 +2,6 @@ import React, { useState, useEffect } from 'react';
 import Footer from '../components/Footer';
 import { ApiServices } from '../services/ApiServices';
 
-const mockSchedule = [
-  {
-    id: 1,
-    subject: "Tân binh lập game",
-    description: "Giáo viên: Luyện Xuân Minh Đức",
-    room: "Phòng D5.Lab",
-    time: "18h00-20h00"
-  }
-];
-
 // Hàm chuyển đổi ngày thành thứ trong tuần
 const getDayOfWeek = (date) => {
   const days = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
@@ -150,7 +140,7 @@ const SchedulePage = () => {
       } catch (err) {
         console.error('API error:', err);
         setError('Không thể tải lịch học');
-        setSchedule(mockSchedule); // Fallback to mock data
+        setSchedule([]); // Không dùng mock data
       } finally {
         setLoading(false);
       }

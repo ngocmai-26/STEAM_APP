@@ -114,7 +114,7 @@ const FacilityPage = () => {
   }
 
   return (
-    <div className="facility-page pt-8">
+    <div className="facility-page pt-8 px-4">
      
      <h3 className="text-3xl font-bold text-center text-gray-800 mb-8 font-sans">Cơ sở vật chất</h3>
       <div className="facility-list">

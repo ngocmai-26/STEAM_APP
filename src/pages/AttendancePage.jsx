@@ -126,7 +126,7 @@ export default function AttendancePage() {
                                         if (item.lesson?.class_room?.teacher?.name) return `${item.lesson.class_room.name} - ${item.lesson.class_room.teacher.name}`;
                                         // Thử lấy từ filter nếu có
                                         if (filter.class_room && classes.length > 0) {
-                                            const selectedClass = classes.find(c => c.id == filter.class_room);
+                                            const selectedClass = classes.find(c => c.id === filter.class_room);
                                             if (selectedClass) return selectedClass.name;
                                         }
                                         if (item.class_room_id) return `Lớp ID: ${item.class_room_id}`;

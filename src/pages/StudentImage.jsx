@@ -108,7 +108,7 @@ export default function StudentImage() {
     }, [filter]);
 
     return (
-        <div className="min-h-screen flex flex-col pt-8 pb-24">
+        <div className="min-h-screen flex flex-col pt-8 pb-24 px-4">
             <div className="flex-1 flex flex-col items-center">
                 <h1 className="text-3xl font-bold text-center mb-8 text-gray-800 font-sans">
                     Hình ảnh học viên

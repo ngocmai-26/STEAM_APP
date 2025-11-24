@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from "react-router-dom";
 import Footer from "../components/Footer";
 import { ApiServices } from '../services/ApiServices';
 import { openWebview } from 'zmp-sdk';
@@ -8,7 +7,6 @@ import { getImageUrl } from '../utils/imageUtils';
 
 export default function NewsPage() {
   const [news, setNews] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState('all');
   const [loading, setLoading] = useState(false);
 
   const openUrlInWebview = async (url) => {
@@ -58,21 +56,11 @@ export default function NewsPage() {
     fetchNews();
   }, []);
 
-  const filteredNews = selectedCategory === 'all'
-    ? news
-    : news.filter(item => item.category === selectedCategory);
-
   return (
-    <div className="min-h-screen pb-24 bg-gray-50">
+    <div className="min-h-screen pt-8  pb-24 bg-gray-50">
       {/* Header */}
-      <div className="bg-gradient-to-b from-blue-200 to-white rounded-b-3xl shadow-md p-2">
-        <div className="flex flex-col items-center">
-          <img src="/logo192.png" alt="logo" className="w-12 h-12 mt-2" />
-          <h1 className="text-3xl font-bold tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-pink-500 to-blue-500 mt-1">STEAM <span className="text-yellow-400">AI</span></h1>
-          <div className="text-base font-semibold text-blue-700 mt-1">FUN <span className="text-orange-400">-</span> LEARN <span className="text-orange-400">-</span> CREATE</div>
-        </div>
-      </div>
-
+      
+      <h3 className="text-3xl font-bold text-center text-gray-800 mb-8 font-sans">Tin tức</h3>
       
 
       {/* News Content */}
@@ -85,7 +73,7 @@ export default function NewsPage() {
           </div>
         ) : (
           <div className="space-y-4">
-            {filteredNews.map((item) => (
+            {news.map((item) => (
               <div key={item.id} className="bg-white rounded-xl shadow-md overflow-hidden">
                 <img
                   src={item.image}
@@ -117,7 +105,7 @@ export default function NewsPage() {
           </div>
         )}
 
-        {filteredNews.length === 0 && !loading && (
+        {news.length === 0 && !loading && (
           <div className="text-center py-8 text-gray-500">
             <span className="text-4xl">📰</span>
             <p className="mt-2">Chưa có tin tức nào trong danh mục này</p>

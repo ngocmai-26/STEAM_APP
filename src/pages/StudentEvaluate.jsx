@@ -9,10 +9,7 @@ export default function StudentEvaluate() {
     // Filter state
     const [students, setStudents] = useState([]);
     const [classes, setClasses] = useState([]);
-    const [modules, setModules] = useState([]);
-    const [lessons, setLessons] = useState([]);
     const [filter, setFilter] = useState({ student: '', class_room: '', module: '', lesson: '' });
-    const [showAllMap, setShowAllMap] = useState({});
     const [modalEvaluation, setModalEvaluation] = useState(null);
 
     // Load filter options
@@ -37,9 +34,6 @@ export default function StudentEvaluate() {
                 }
             })
             .catch(() => setClasses([]));
-
-        ApiServices.getCourses().then(res => setModules(res.data || [])).catch(() => setModules([]));
-        ApiServices.getCourseModules && ApiServices.getCourseModules().then(res => setLessons(res.data || [])).catch(() => setLessons([]));
     }, []);
 
     // Load evaluations
@@ -63,7 +57,7 @@ export default function StudentEvaluate() {
     }, [filter]);
 
     return (
-        <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 to-pink-50 pt-8 pb-24">
+        <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 to-pink-50 pt-8 pb-24 px-4">
             <div className="flex-1 flex flex-col items-center">
                 <h1 className="text-3xl font-bold text-gray-800 mb-8 font-sans">Đánh giá học viên</h1>
                 {/* Filter */}
