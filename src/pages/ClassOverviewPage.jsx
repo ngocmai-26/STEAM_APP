@@ -109,7 +109,7 @@ export default function ClassOverviewPage() {
                                         <h4 className="font-semibold text-blue-700 text-sm uppercase tracking-wide">📚 Thông tin khóa học</h4>
 
                                         <div className="text-sm text-gray-700">
-                                            <span className="font-medium">Số học viên tối đa:</span> {cls.max_students || 'N/A'}
+                                            <span className="font-medium">Số lượng học viên:</span> {(cls.students?.length || 0)}/{cls.max_students || 'N/A'}
                                         </div>
                                         <div className="text-sm text-gray-700">
                                             <span className="font-medium">Ngày bắt đầu:</span> {cls.start_date ? new Date(cls.start_date).toLocaleDateString('vi-VN') : 'N/A'}

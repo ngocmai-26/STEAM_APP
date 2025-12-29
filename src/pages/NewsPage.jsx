@@ -94,7 +94,9 @@ export default function NewsPage() {
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-gray-400">{item.date}</span>
                     <button className="text-xs text-blue-600 font-medium hover:text-blue-700" onClick={() => {
-                openUrlInWebview(item.link);
+                if (item.link) {
+                  openUrlInWebview(item.link);
+                }
               }}>
                       Đọc thêm →
                     </button>

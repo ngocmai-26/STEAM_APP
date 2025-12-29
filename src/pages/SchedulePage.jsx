@@ -46,6 +46,36 @@ const SchedulePage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const daysToShow = 5; // Số ngày hiển thị mỗi lần
+  const MAX_WEEKS = 1; // Giới hạn 1 tuần (7 ngày)
+  const MAX_DAYS = MAX_WEEKS * 7; // 7 ngày
+
+  // Hàm tính ngày tối đa (startDate + 7 ngày)
+  const getMaxDate = (startDateStr) => {
+    if (!startDateStr) return '';
+    const start = new Date(startDateStr);
+    const maxDate = new Date(start);
+    maxDate.setDate(maxDate.getDate() + MAX_DAYS - 1); // -1 vì tính cả ngày bắt đầu
+    return maxDate.toISOString().split('T')[0];
+  };
+
+  // Hàm tính ngày tối thiểu (endDate - 7 ngày)
+  const getMinDate = (endDateStr) => {
+    if (!endDateStr) return '';
+    const end = new Date(endDateStr);
+    const minDate = new Date(end);
+    minDate.setDate(minDate.getDate() - MAX_DAYS + 1); // +1 vì tính cả ngày kết thúc
+    return minDate.toISOString().split('T')[0];
+  };
+
+  // Hàm kiểm tra khoảng cách giữa 2 ngày có vượt quá 1 tuần không
+  const isValidDateRange = (start, end) => {
+    if (!start || !end) return true;
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+    const diffTime = Math.abs(endDate - startDate);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // +1 để tính cả 2 ngày
+    return diffDays <= MAX_DAYS;
+  };
 
   // Load học viên khi component mount
   useEffect(() => {
@@ -122,20 +152,20 @@ const SchedulePage = () => {
           student: selectedStudent,
           class_room: selectedClass
         };
-        
+
         // Thêm filter theo ngày nếu có
         if (startDate) params.start_date = startDate;
         if (endDate) params.end_date = endDate;
-        
+
         // Debug log để kiểm tra API call
         console.log('API call params:', params);
-        
+
         const response = await ApiServices.getTimeTables(params);
-        
+
         // Debug log để kiểm tra response
         console.log('API response:', response);
         console.log('Schedule data:', response.data);
-        
+
         setSchedule(response.data || []);
       } catch (err) {
         console.error('API error:', err);
@@ -170,13 +200,13 @@ const SchedulePage = () => {
     const now = new Date();
     const startTime = new Date(item.start_datetime || item.schedule?.start_datetime);
     const endTime = new Date(item.end_datetime || item.schedule?.end_datetime);
-    
+
     if (now < startTime) {
       return { status: 'upcoming', text: 'Sắp tới', color: 'text-blue-600' };
     } else if (now >= startTime && now <= endTime) {
       return { status: 'ongoing', text: 'Đang diễn ra', color: 'text-green-600' };
     } else {
-      return { status: 'past', text: 'Đã qua', color: 'text-gray-500' };
+      return { status: 'past', text: 'Đã hoàn thành', color: 'text-gray-500' };
     }
   };
 
@@ -186,21 +216,21 @@ const SchedulePage = () => {
       console.log('No schedule data or no selected day:', { selectedDay, scheduleLength: schedule.length });
       return schedule;
     }
-    
+
     // Debug log để kiểm tra tất cả dữ liệu schedule
     console.log('All schedule data:', schedule.map(item => ({
       name: item.name,
       date: item.schedule?.start_date || item.date,
       fullItem: item
     })));
-    
+
     const filtered = schedule.filter(item => {
       const itemDate = item.schedule?.start_date || item.date;
       if (!itemDate) return false;
-      
+
       // Chuyển đổi ngày để so sánh
       const selectedDateStr = weekDays.find(day => day.id === selectedDay)?.date;
-      
+
       // Chuyển đổi itemDate từ "14/10/2025" thành "14-10" để so sánh
       let itemDateFormatted = itemDate;
       if (itemDate.includes('/')) {
@@ -210,7 +240,7 @@ const SchedulePage = () => {
           itemDateFormatted = `${parts[0].padStart(2, '0')}-${parts[1].padStart(2, '0')}`;
         }
       }
-      
+
       // Debug log để kiểm tra
       console.log('Debug filter:', {
         selectedDay,
@@ -220,15 +250,15 @@ const SchedulePage = () => {
         itemName: item.name,
         match: itemDateFormatted === selectedDateStr
       });
-      
+
       // Kiểm tra ngày khớp với ngày được chọn
       if (itemDateFormatted !== selectedDateStr) return false;
-      
+
       // Chỉ filter theo ngày được chọn, không filter theo thời gian hiện tại
       // vì người dùng có thể muốn xem lịch học trong tương lai
       return true;
     });
-    
+
     console.log('Filtered schedule result:', filtered);
     return filtered;
   };
@@ -288,20 +318,52 @@ const SchedulePage = () => {
               <input
                 type="date"
                 value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
+                onChange={(e) => {
+                  const newStartDate = e.target.value;
+                  setStartDate(newStartDate);
+
+                  // Nếu endDate vượt quá 1 tuần từ startDate mới, tự động điều chỉnh
+                  if (endDate && !isValidDateRange(newStartDate, endDate)) {
+                    const maxEndDate = getMaxDate(newStartDate);
+                    setEndDate(maxEndDate);
+                  }
+                }}
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
               />
+              {startDate && endDate && !isValidDateRange(startDate, endDate) && (
+                <p className="text-xs text-red-500 mt-1">Khoảng cách không được vượt quá 1 tuần (7 ngày)</p>
+              )}
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Đến ngày
+                Đến ngày (tối đa 1 tuần)
               </label>
               <input
                 type="date"
                 value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
+                min={startDate || undefined}
+                max={startDate ? getMaxDate(startDate) : undefined}
+                onChange={(e) => {
+                  const newEndDate = e.target.value;
+
+                  // Kiểm tra nếu vượt quá 1 tuần
+                  if (startDate && !isValidDateRange(startDate, newEndDate)) {
+                    // Tự động điều chỉnh về ngày tối đa
+                    const maxEndDate = getMaxDate(startDate);
+                    setEndDate(maxEndDate);
+                    setError(`Khoảng thời gian không được vượt quá 1 tuần (7 ngày). Đã tự động điều chỉnh về ${maxEndDate}`);
+                    setTimeout(() => setError(null), 3000);
+                  } else {
+                    setEndDate(newEndDate);
+                  }
+                }}
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
               />
+              {startDate && (
+                <p className="text-xs text-gray-500 mt-1">
+                  Tối đa: {getMaxDate(startDate)} (7 ngày từ ngày bắt đầu)
+                </p>
+              )}
             </div>
           </div>
         </div>
@@ -381,22 +443,23 @@ const SchedulePage = () => {
                 <h3 className="text-lg font-semibold text-blue-600">
                   {item.subject || item.course_name || item.name || 'Khóa học'}
                 </h3>
+
+              </div>
+
+              <div className="mt-2">
+
+                <span>Thời gian: {item.time || (item.schedule?.start_time && item.schedule?.end_time ? `${item.schedule.start_time}-${item.schedule.end_time}` : 'Thời gian chưa xác định')}</span>
+              </div>
+              {(item.date || item.schedule?.start_date) && (
+                <div className="mt-1 ">
+                  Ngày: {item.schedule?.start_date || new Date(item.date).toLocaleDateString('vi-VN')}
+                </div>
+              )}
+              <div className='flex justify-end'>
                 <span className={`text-xs px-2 py-1 rounded-full ${getScheduleStatus(item).color} bg-gray-100`}>
                   {getScheduleStatus(item).text}
                 </span>
               </div>
-              <p className="text-sm text-gray-600">
-                {item.description || item.teacher_name || item.instructor || 'Thông tin giáo viên chưa có'}
-              </p>
-              <div className="mt-2 flex justify-between text-sm text-gray-500">
-                <span>{item.room || item.location || 'Phòng học chưa xác định'}</span>
-                <span>{item.time || (item.schedule?.start_time && item.schedule?.end_time ? `${item.schedule.start_time}-${item.schedule.end_time}` : 'Thời gian chưa xác định')}</span>
-              </div>
-              {(item.date || item.schedule?.start_date) && (
-                <div className="mt-1 text-xs text-gray-400">
-                  Ngày: {item.schedule?.start_date || new Date(item.date).toLocaleDateString('vi-VN')}
-                </div>
-              )}
             </div>
           ))
         )}
