@@ -92,7 +92,7 @@ export default function StudentEvaluate() {
                                 <option value="" className="text-gray-500 font-medium text-base">🎓 Tất cả lớp học</option>
                                 {classes.map(cls => (
                                     <option key={cls.id} value={cls.id} className="text-gray-700 font-medium py-1 text-base">
-                                        {cls.teacher?.name ? ` ${cls.teacher.name}` : `${cls.name}`}
+                                        {cls?.name ? ` ${cls?.name}` : `${cls.name}`}
                                     </option>
                                 ))}
                             </select>

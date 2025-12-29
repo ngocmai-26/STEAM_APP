@@ -274,7 +274,7 @@ const SchedulePage = () => {
               <option value="">Chọn lớp học</option>
               {classes.map((classItem) => (
                 <option key={classItem.id} value={classItem.id}>
-                  Lớp #{classItem.id} - {classItem.name || 'Lớp học'}
+                  {classItem.name || 'Lớp học'}
                 </option>
               ))}
             </select>

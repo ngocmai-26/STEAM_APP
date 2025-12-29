@@ -7,30 +7,69 @@ function ImageModal({ images, currentIdx, onClose }) {
     const [idx, setIdx] = useState(currentIdx || 0);
     useEffect(() => { setIdx(currentIdx || 0); }, [currentIdx]);
     if (!images || images.length === 0) return null;
+    
+    const goPrev = () => {
+        if (idx > 0) {
+            setIdx(idx - 1);
+        }
+    };
+    
+    const goNext = () => {
+        if (idx < images.length - 1) {
+            setIdx(idx + 1);
+        }
+    };
+    
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 animate-fade-in">
-            <div className="bg-white rounded-2xl shadow-2xl p-2 md:p-6 max-w-lg w-full flex flex-col items-center relative animate-slide-up">
-                <button className="absolute top-3 right-3 bg-white border border-gray-200 rounded-full w-9 h-9 flex items-center justify-center text-xl text-gray-500 hover:text-red-500 shadow transition" onClick={onClose} aria-label="Đóng">×</button>
-                <div className="flex items-center justify-center w-full">
-                    <button
-                        className="bg-white border border-gray-200 rounded-full w-10 h-10 flex items-center justify-center text-2xl text-blue-600 shadow hover:bg-blue-100 transition disabled:opacity-40 mr-2"
-                        onClick={() => setIdx(i => Math.max(0, i - 1))}
-                        disabled={idx === 0}
-                        aria-label="Trước"
-                    >&#8592;</button>
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 animate-fade-in" onClick={onClose}>
+            <div className="bg-white rounded-2xl shadow-2xl p-4 md:p-6 max-w-lg w-full mx-4 flex flex-col items-center relative animate-slide-up" onClick={(e) => e.stopPropagation()}>
+                {/* Nút đóng */}
+                <button 
+                    className="absolute top-3 right-3 bg-white border-2 border-gray-300 rounded-full w-10 h-10 flex items-center justify-center text-xl text-gray-600 hover:text-red-500 hover:border-red-500 shadow-lg transition z-10" 
+                    onClick={onClose} 
+                    aria-label="Đóng"
+                >
+                    ×
+                </button>
+                
+                {/* Container ảnh với nút điều hướng */}
+                <div className="relative w-full flex items-center justify-center mb-4">
+                    {/* Nút Trước - bên trái */}
+                    {idx > 0 && (
+                        <button
+                            className="absolute left-2 md:left-4 bg-blue-500 hover:bg-blue-600 text-white rounded-full w-12 h-12 md:w-14 md:h-14 flex items-center justify-center text-2xl md:text-3xl shadow-lg hover:shadow-xl transition-all z-10 active:scale-95"
+                            onClick={goPrev}
+                            aria-label="Ảnh trước"
+                        >
+                            &#8592;
+                        </button>
+                    )}
+                    
+                    {/* Ảnh */}
                     <img
                         src={getImageUrl(images[idx])}
-                        alt="Hình học viên phóng to"
-                        className="w-full max-w-[400px] max-h-[60vh] object-contain rounded-2xl border-4 border-white shadow-xl bg-white"
+                        alt={`Hình học viên ${idx + 1}`}
+                        className="w-full max-w-[400px] max-h-[65vh] object-contain rounded-xl border-2 border-gray-200 shadow-lg bg-white"
                     />
-                    <button
-                        className="bg-white border border-gray-200 rounded-full w-10 h-10 flex items-center justify-center text-2xl text-blue-600 shadow hover:bg-blue-100 transition disabled:opacity-40 ml-2"
-                        onClick={() => setIdx(i => Math.min(images.length - 1, i + 1))}
-                        disabled={idx === images.length - 1}
-                        aria-label="Sau"
-                    >&#8594;</button>
+                    
+                    {/* Nút Sau - bên phải */}
+                    {idx < images.length - 1 && (
+                        <button
+                            className="absolute right-2 md:right-4 bg-blue-500 hover:bg-blue-600 text-white rounded-full w-12 h-12 md:w-14 md:h-14 flex items-center justify-center text-2xl md:text-3xl shadow-lg hover:shadow-xl transition-all z-10 active:scale-95"
+                            onClick={goNext}
+                            aria-label="Ảnh tiếp theo"
+                        >
+                            &#8594;
+                        </button>
+                    )}
                 </div>
-                <div className="text-xs text-gray-600 mt-2 mb-1">Ảnh {idx + 1}/{images.length}</div>
+                
+                {/* Thông tin ảnh */}
+                <div className="w-full flex items-center justify-center px-2">
+                    <div className="text-sm md:text-base text-gray-600 font-medium">
+                        Ảnh {idx + 1}/{images.length}
+                    </div>
+                </div>
             </div>
             <style>{`
                 .animate-fade-in { animation: fadeIn 0.2s; }
@@ -141,7 +180,7 @@ export default function StudentImage() {
                             <option value="" className="text-gray-500 font-medium text-base">🎓 Tất cả lớp học</option>
                             {classes.map(cls => (
                                 <option key={cls.id} value={cls.id} className="text-gray-700 font-medium py-1 text-base">
-                                    {cls.teacher?.name ? ` ${cls.teacher.name}` : `${cls.name}`}
+                                    {cls?.name ? ` ${cls?.name}` : `${cls.name}`}
                                 </option>
                             ))}
                         </select>
@@ -185,30 +224,18 @@ export default function StudentImage() {
                                         </div>
                                     </div>
 
-                                    {/* Grid ảnh với style đẹp */}
-                                    <div className="flex gap-6">
-                        {convertedImages.slice(0, 3).map((img, i) => (
+                                    {/* Grid ảnh với style đẹp - mỗi dòng 3 ảnh */}
+                                    <div className="grid grid-cols-3 gap-3">
+                        {convertedImages.map((img, i) => (
                             <img
                                 key={i}
                                 src={img}
                                 alt={lesson ? lesson.name : 'Hình học viên'}
-                                className="w-32 h-32 object-cover rounded-xl bg-gray-200 shadow hover:scale-105 transition cursor-pointer border border-gray-200"
+                                className="w-full aspect-square object-cover rounded-xl bg-gray-200 shadow hover:scale-105 transition cursor-pointer border border-gray-200"
                                 onClick={() => setModal({ open: true, images: convertedImages, idx: i })}
                             />
                         ))}
                                     </div>
-
-                                    {/* Button xem tất cả ảnh */}
-                                    {convertedImages.length > 3 && (
-                                        <div className="text-center mb-6">
-                                            <button
-                                                className="bg-white text-blue-600 px-6 py-2 rounded-lg hover:bg-gray-50 transition-colors duration-200 font-medium shadow-lg border border-gray-200"
-                                                onClick={() => setModal({ open: true, images: convertedImages, idx: 0 })}
-                                            >
-                                                👁️ Xem tất cả {convertedImages.length} ảnh
-                                            </button>
-                                        </div>
-                                    )}
 
                                     {/* Ngăn cách giữa các bài học */}
                                     {idx < galleries.length - 1 && (

@@ -20,7 +20,7 @@ export const fetchAccessToken = async () => {
   try {
     // Theo tài liệu: getAccessToken() trả về Promise<string>
     const accessToken = await getAccessToken();
-    return accessToken;
+    return "jbzJUcEIBLQtMrzyOv0XLxDGNdviXqmal4v4SsFzUIAoVby7CTCWRvqU9Ym-rpe0Y5mqS2hm9rIDOYq63jCJLB4J3oucktPwf1flNnUpV1kz4dbHEQv49kbaE5Lrsnnyz7KX5sl_E4N7L3XqQ_SMMif87pnew0jBmta58n3MFmd060KiLvGB1zea5NTkxJPRuKj9VrJ4MoNtRY5nHVq60Dim8KnG-b87qZDDV5kcR0_n4c5fOQ19AiOKLraGgdeqfsPL42YoNMEY4oOv0Q01GRSWScmmbM4_dGTfGHRJRJoYTKnvAhvH2xOG8q8pfoaEiImh82ElAcYHCG9C881n4wyNKtm-XNG4eZ9IGY-eK16J0Kz_7SzD9xyROKCxW7iFYWbIH46rSJltBLv5PuGi0VS93LTIdnO8L4hc-KiSP8WgLG";
   } catch (error) {
     console.error('❌ [fetchAccessToken] Failed to get access token:', error);
     return null; 
@@ -42,7 +42,7 @@ export const initToken = async () => {
     console.log('✅ [initToken] Token received from Zalo SDK');
     
     console.log('🎉 [initToken] Token initialized:', accessToken ? 'Success' : 'Failed');
-    return accessToken;
+    return "jbzJUcEIBLQtMrzyOv0XLxDGNdviXqmal4v4SsFzUIAoVby7CTCWRvqU9Ym-rpe0Y5mqS2hm9rIDOYq63jCJLB4J3oucktPwf1flNnUpV1kz4dbHEQv49kbaE5Lrsnnyz7KX5sl_E4N7L3XqQ_SMMif87pnew0jBmta58n3MFmd060KiLvGB1zea5NTkxJPRuKj9VrJ4MoNtRY5nHVq60Dim8KnG-b87qZDDV5kcR0_n4c5fOQ19AiOKLraGgdeqfsPL42YoNMEY4oOv0Q01GRSWScmmbM4_dGTfGHRJRJoYTKnvAhvH2xOG8q8pfoaEiImh82ElAcYHCG9C881n4wyNKtm-XNG4eZ9IGY-eK16J0Kz_7SzD9xyROKCxW7iFYWbIH46rSJltBLv5PuGi0VS93LTIdnO8L4hc-KiSP8WgLG";
   } catch (error) {
     console.error('💥 [initToken] Failed to initialize access token:', error);
     accessToken = null;
@@ -52,6 +52,6 @@ export const initToken = async () => {
 
 export const getToken = () => {
   console.log('🔍 [getToken] Current token:', accessToken ? 'Available' : 'Missing');
-  return accessToken;
+  return "jbzJUcEIBLQtMrzyOv0XLxDGNdviXqmal4v4SsFzUIAoVby7CTCWRvqU9Ym-rpe0Y5mqS2hm9rIDOYq63jCJLB4J3oucktPwf1flNnUpV1kz4dbHEQv49kbaE5Lrsnnyz7KX5sl_E4N7L3XqQ_SMMif87pnew0jBmta58n3MFmd060KiLvGB1zea5NTkxJPRuKj9VrJ4MoNtRY5nHVq60Dim8KnG-b87qZDDV5kcR0_n4c5fOQ19AiOKLraGgdeqfsPL42YoNMEY4oOv0Q01GRSWScmmbM4_dGTfGHRJRJoYTKnvAhvH2xOG8q8pfoaEiImh82ElAcYHCG9C881n4wyNKtm-XNG4eZ9IGY-eK16J0Kz_7SzD9xyROKCxW7iFYWbIH46rSJltBLv5PuGi0VS93LTIdnO8L4hc-KiSP8WgLG";
 };
 
